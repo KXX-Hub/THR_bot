@@ -43,9 +43,9 @@ def enter():
         pass
     print("進入系統")
     chrome_click(f'//*[@id="BookingS1Form"]/div[3]/div[1]/div/div[1]/div/select/option[{start_station+1}]')
-    print("以輸入起站:" + start_station)
+    print("以輸入起站:")
     chrome_click(f'//*[@id="BookingS1Form"]/div[3]/div[1]/div/div[2]/div/select/option[{end_station+1}]')
-    print("以輸入迄站:" + end_station)
+    print("以輸入迄站:")
     time.sleep(1000)
 
 
