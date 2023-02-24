@@ -10,14 +10,22 @@ def config_file_generator():
     """Generate the template of config file"""
     with open('config.yml', 'w', encoding="utf8") as f:
         f.write("""# ++--------------------------------++
-# | Auto_bot_test                     |
-# | Made by KXX (MIT License)         |
+# | Auto_bot_test                        |
+# | Made by KXX (MIT License)            |
 # ++--------------------------------++
 # 輸入起訖站
-# |  南港  台北  板橋  桃園  新竹  苗栗   |
-# |  台中  彰化  雲林  嘉義  台南  左營   |
+# |  南港  台北  板橋  桃園  新竹  苗栗      |
+# |  台中  彰化  雲林  嘉義  台南  左營      |
 start_station : ''
 end_station : ''
+# 輸入出發時間 
+# | 00:00 00:30 01:00 01:30 02:00 02:30 03:00 03:30 04:00 04:30 |
+# | 05:00 05:30 06:00 06:30 07:00 07:30 08:00 08:30 09:00 09:30 |
+# | 10:00 10:30 11:00 11:30 12:00 12:30 13:00 13:30 14:00 14:30 |
+# | 15:00 15:30 16:00 16:30 17:00 17:30 18:00 18:30 19:00 19:30 |
+# | 20:00 20:30 21:00 21:30 22:00 22:30 23:00 23:30 24:00 24:30 |
+
+start_time : ''
 """
                 )
     sys.exit()
@@ -37,11 +45,12 @@ def read_config():
     try:
         with open('config.yml', 'r', encoding="utf8") as f:
             data = yaml.load(f, Loader=SafeLoader)
-            start = transpose_start(data['start_station'])
-            end = transpose_end(data['end_station'])
+            start = get_start_station(data['start_station'])
+            end = get_end_station(data['end_station'])
             config = {
                 'start_station': start,
-                'end_station': end
+                'end_station': end,
+                'start_time' :data['start_time']
             }
             return config
     except (KeyError, TypeError):
@@ -50,9 +59,8 @@ def read_config():
             "If the problem can't be solved, consider delete config.yml and restart the program.\n")
         sys.exit()
 
-station = dict["//*[@id='BookingS1Form']/div[3]/div[1]/div/div[1]/div/select/option[2]",]
 
-def transpose_start(start):
+def get_start_station(start):
     if start == "南港":
         start = 1
     elif start == "台北":
@@ -80,7 +88,7 @@ def transpose_start(start):
     return start
 
 
-def transpose_end(end):
+def get_end_station(end):
     if end == "南港":
         end = 1
     elif end == "台北":
@@ -106,3 +114,42 @@ def transpose_end(end):
     elif end == "左營":
         end = 12
     return end
+
+
+#time_dict = {
+#    '00:00': 2, '00:30': 3, '01:00': 4, '01:30': 5, '02:00': 6, '02:30': 7, '03:00': 8, '03:30': 9, '04:00': 10,
+#
+#    '04:30': 11,
+#    '05:00': 12, '05:30': 13, '06:00': 14, '06:30': 15, '07:00': 16, '07:30': 17, '08:00': 18, '08:30': 19, '09:00': 20,
+#    '09:30': 21,
+#}
+
+
+def get_start_time(time):
+    if time == "00:00":
+        time = 2
+    elif time == "00:30":
+        time = 3
+    elif time == "01:00":
+        time = 4
+    elif time == "01:30":
+        time = 5
+    elif time == "02:00":
+        time = 6
+    elif time == "02:30":
+        time = 7
+    elif time == "03:30":
+        time = 8
+    elif time == "04:00":
+        time = 9
+    elif time == "05:00":
+        time = 10
+    elif time == "05:30":
+        time = 11
+    elif time == "06:00":
+        time = 12
+    elif time == "06:30":
+        time = 13
+    elif time == "07:00":
+        time = 14
+    return time

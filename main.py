@@ -6,11 +6,11 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-
+from selenium.webdriver.support.ui import Select
 import utilities as utils
 
 config = utils.read_config()
-chrome = webdriver.Chrome()
+driver = webdriver.Chrome()
 
 options = Options()
 options.add_argument("--disable-notifications")
@@ -20,35 +20,49 @@ start_station = config.get('start_station')
 end_station = config.get('end_station')
 
 
-def chrome_send_keys(locator, key):
+def driver_send_keys_xpath(locator, key):
     """Send keys to element.
     :param locator: Locator of element.
     :param key: Keys to send.
     """
-    WebDriverWait(chrome, 10).until(ec.presence_of_element_located((By.XPATH, locator))).send_keys(key)
+    WebDriverWait(driver, 10).until(ec.presence_of_element_located((By.XPATH, locator))).send_keys(key)
 
 
-def chrome_click(locator):
+def driver_click_xpath(locator):
     """Click element.
     :param locator: Locator of element.
     """
-    WebDriverWait(chrome, 10).until(ec.presence_of_element_located((By.XPATH, locator))).click()
+    WebDriverWait(driver, 10).until(ec.presence_of_element_located((By.XPATH, locator))).click()
+
+
+def driver_click(locator):
+    """Click element.
+    :param locator: Locator of element.
+    """
+    WebDriverWait(driver, 10).until(ec.presence_of_element_located(locator)).click()
 
 
 def enter():
-    chrome.get(tw_hs_url)
+    driver.get(tw_hs_url)
     try:
-        chrome_click("//*[@id='cookieAccpetBtn']")
+        driver_click_xpath("//*[@id='cookieAccpetBtn']")
     except TimeoutException:
         pass
     print("進入系統")
-    chrome_click(f'//*[@id="BookingS1Form"]/div[3]/div[1]/div/div[1]/div/select/option[{start_station+1}]')
-    print("以輸入起站:")
-    chrome_click(f'//*[@id="BookingS1Form"]/div[3]/div[1]/div/div[2]/div/select/option[{end_station+1}]')
-    print("以輸入迄站:")
+    driver_click_xpath(f'//*[@id="BookingS1Form"]/div[3]/div[1]/div/div[1]/div/select/option[{start_station + 1}]')
+    print("已輸入起站")
+    driver_click_xpath(f'//*[@id="BookingS1Form"]/div[3]/div[1]/div/div[2]/div/select/option[{end_station + 1}]')
+    print("已輸入迄站")
+#    driver_click_xpath("//*[@id='mainBody']/div[9]/div[2]/div/div[2]/div[1]/span[29]")
+#    print("已輸入日期")
+#    driver_click_xpath("//*[@id='BookingS1Form']/div[3]/div[2]/div/div[2]/div[1]/select/option[2]")
+    select = Select(driver.find_element_by_id("toTimeTable"))
+    select.select_by_visible_text(u"00:00")
+    print("已輸入出發時間")
     time.sleep(1000)
 
 
 if __name__ == '__main__':
     enter()
-    chrome.quit()
+    driver.quit()
+# //*[@id='BookingS1Form']/div[3]/div[2]/div/div[2]/div[1]/select/option[]
