@@ -41,8 +41,8 @@ def login():
         chrome_click("//*[@id='cookieAccpetBtn']")
     except TimeoutException:
         pass
-    chrome_click(f'//*[@id="BookingS1Form"]/div[3]/div[1]/div/div[1]/div/select/option[{start_station}]')
-    chrome_click(f'//*[@id="BookingS1Form"]/div[3]/div[1]/div/div[2]/div/select/option[{end_station}]')
+    chrome_click(f'//*[@id="BookingS1Form"]/div[3]/div[1]/div/div[1]/div/select/option[{start_station+1}]')
+    chrome_click(f'//*[@id="BookingS1Form"]/div[3]/div[1]/div/div[2]/div/select/option[{end_station+1}]')
     print('進入系統')
     time.sleep(1000)
 
