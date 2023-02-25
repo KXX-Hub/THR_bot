@@ -2,6 +2,7 @@
 import sys
 from os.path import exists
 
+import ddddocr
 import yaml
 from yaml import SafeLoader
 
@@ -109,3 +110,14 @@ def get_end_station(end_station):
 def get_start_time(start_time):
     start_time = time_list.index(start_time) + 2
     return start_time
+
+
+def get_ocr_answer(ocr_image_path):
+    """Get the answer of ocr.
+    :rtype: str
+    """
+    ocr = ddddocr.DdddOcr()
+    with open(ocr_image_path, 'rb') as f:
+        image = f.read()
+    answer = ocr.classification(image)
+    return answer

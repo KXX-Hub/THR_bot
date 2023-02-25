@@ -41,6 +41,14 @@ def driver_click_xpath(locator):
     WebDriverWait(driver, 10).until(ec.presence_of_element_located((By.XPATH, locator))).click()
 
 
+def driver_screenshot(locator, path):
+    """Take screenshot of element.
+    :param locator: Locator of element.
+    :param path: Path to save screenshot.
+    """
+    WebDriverWait(driver, 10).until(ec.presence_of_element_located(locator)).screenshot(path)
+
+
 def driver_click(locator):
     """Click element.
     :param locator: Locator of element.
@@ -74,6 +82,8 @@ def enter():
     print("已輸入大學生票")
     driver_click_xpath(f'//*[@id="BookingS1Form"]/div[4]/div[1]/div[5]/div/select/option[{senior_persons_ticket + 1}]')
     print("已輸入敬老票")
+    driver_screenshot((By.XPATH, "//*[@id='BookingS1Form_homeCaptcha_passCode']"), "captcha.png")
+    driver_send_keys_xpath("//*[@id='securityCode']", utils.get_ocr_answer("captcha.png"))
     time.sleep(1000)
 
 
