@@ -24,6 +24,7 @@ children_ticket = int(config.get('children_ticket'))
 disabled_ticket = int(config.get('disabled_ticket'))
 student_ticket = int(config.get('student_ticket'))
 senior_persons_ticket = int(config.get('senior_persons_ticket'))
+early_ticket = config.get('early')
 
 
 def driver_send_keys_xpath(locator, key):
@@ -70,7 +71,7 @@ def enter():
     driver_click_xpath(f'//*[@id="BookingS1Form"]/div[3]/div[2]/div/div[2]/div[1]/select/option[{start_time}]')
     print("已輸入出發時間")
     driver_click_xpath("//*[@id='BookingS1Form']/div[3]/div[2]/div/div[1]/div[1]/input[2]")
-    driver_click_xpath("//*[@id='mainBody']/div[9]/div[2]/div/div[2]/div[2]/span[19]")
+    driver_click_xpath("//*[@id='mainBody']/div[9]/div[2]/div/div[2]/div[2]/span[21]")
     print("已輸入日期")
     driver_click_xpath(f'//*[@id="BookingS1Form"]/div[4]/div[1]/div[1]/div/select/option[{regular_ticket + 1}]')
     print("已輸入全票")
@@ -83,8 +84,11 @@ def enter():
     driver_click_xpath(f'//*[@id="BookingS1Form"]/div[4]/div[1]/div[5]/div/select/option[{senior_persons_ticket + 1}]')
     print("已輸入敬老票")
     driver_screenshot((By.XPATH, "//*[@id='BookingS1Form_homeCaptcha_passCode']"), "captcha.png")
-    driver_send_keys_xpath("//*[@id='securityCode']", utils.get_ocr_answer("captcha.png"))
-    time.sleep(1000)
+    driver_send_keys_xpath("//*[@id='securityCode']", utils.get_ocr_password("captcha.png"))
+    if early_ticket == 1:
+        driver_click_xpath('//*[@id="onlyQueryOffPeakCheckBox"]')
+    time.sleep(3)
+    driver_click_xpath('//*[@id="SubmitButton"]')
 
 
 if __name__ == '__main__':

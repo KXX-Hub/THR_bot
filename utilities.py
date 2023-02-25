@@ -60,6 +60,7 @@ def read_config():
             ticket_dict['disabled_ticket'] = data['disabled_ticket']
             ticket_dict['student_ticket'] = data['student_ticket']
             ticket_dict['senior_persons_ticket'] = data['senior_persons_ticket']
+            early_ticket = get_early_ticket(data['early_ticket'])
             config = {
                 'start_station': start_station,
                 'end_station': end_station,
@@ -68,7 +69,8 @@ def read_config():
                 'children_ticket': ticket_dict['children_ticket'],
                 'disabled_ticket': ticket_dict['disabled_ticket'],
                 'student_ticket': ticket_dict['student_ticket'],
-                'senior_persons_ticket': ticket_dict['senior_persons_ticket']
+                'senior_persons_ticket': ticket_dict['senior_persons_ticket'],
+                'early_ticket': early_ticket
             }
             return config
     except (KeyError, TypeError):
@@ -112,12 +114,21 @@ def get_start_time(start_time):
     return start_time
 
 
-def get_ocr_answer(ocr_image_path):
+def get_ocr_password(ocr_image_path):
     """Get the answer of ocr.
     :rtype: str
     """
     ocr = ddddocr.DdddOcr()
     with open(ocr_image_path, 'rb') as f:
         image = f.read()
-    answer = ocr.classification(image)
-    return answer
+    password = ocr.classification(image)
+    return password
+
+
+def get_early_ticket(early_ticket):
+    if early_ticket == '是':
+        early_ticket = 1
+        return early_ticket
+    elif early_ticket == '否':
+        early_ticket = 0
+        return early_ticket
