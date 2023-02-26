@@ -1,18 +1,20 @@
-import time
 import random
+import time
+
 import requests
+from faker import Faker
 from selenium import webdriver
 from selenium.common import TimeoutException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.proxy import Proxy, ProxyType
+import subprocess
 import utilities as utils
-from faker import Faker
 
 fake = Faker()
 config = utils.read_config()
-driver = webdriver.Chrome()
 options = Options()
 THR_url = 'https://irs.thsrc.com.tw/IMINT/?locale=tw&_ga=2.61512805.853185086.1677227212-2135743068.1677227211'
 options.add_argument("--headless")
@@ -21,6 +23,22 @@ headers = {
     'User-Agent': fake.user_agent(),
     'Accept-Language': 'en-US,en;q=0.5'
 }
+
+# 启动 secret-agent 代理
+subprocess.Popen(['secret-agent', 'start'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+# 创建 secret-agent 代理
+proxy = Proxy()
+proxy.proxy_type = ProxyType.MANUAL
+proxy.http_proxy = 'http://127.0.0.1:9191'
+proxy.ssl_proxy = 'http://127.0.0.1:9191'
+
+# 创建 selenium WebDriver，并使用 secret-agent 代理
+options = webdriver.ChromeOptions()
+options.add_argument('--proxy-server=%s' % proxy.http_proxy)
+driver = webdriver.Chrome(options=options)
+
+
 response = requests.get(THR_url, headers=headers)
 print(response.text)
 
@@ -108,3 +126,4 @@ def enter():
 if __name__ == '__main__':
     enter()
     driver.quit()
+    subprocess.Popen(['secret-agent', 'stop'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
