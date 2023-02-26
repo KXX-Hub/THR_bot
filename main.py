@@ -1,21 +1,30 @@
 import time
+import random
 
+import requests
 from selenium import webdriver
 from selenium.common import TimeoutException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-
 import utilities as utils
+from faker import Faker
 
+fake = Faker()
 config = utils.read_config()
 driver = webdriver.Chrome()
-
 options = Options()
-options.add_argument("--disable-notifications")
+THR_url = 'https://irs.thsrc.com.tw/IMINT/?locale=tw&_ga=2.61512805.853185086.1677227212-2135743068.1677227211'
+options.add_argument("--headless")
 
-tw_hs_url = 'https://irs.thsrc.com.tw/IMINT/?locale=tw&_ga=2.61512805.853185086.1677227212-2135743068.1677227211'
+headers = {
+    'User-Agent': fake.user_agent(),
+    'Accept-Language': 'en-US,en;q=0.5'
+}
+response = requests.get(THR_url, headers=headers)
+print(response.text)
+
 start_station = config.get('start_station')
 end_station = config.get('end_station')
 start_time = config.get('start_time')
@@ -58,7 +67,8 @@ def driver_click(locator):
 
 
 def enter():
-    driver.get(tw_hs_url)
+    driver.get(THR_url)
+    driver.maximize_window()
     try:
         driver_click_xpath("//*[@id='cookieAccpetBtn']")
     except TimeoutException:
@@ -66,13 +76,17 @@ def enter():
     print("進入系統")
     driver_click_xpath(f'//*[@id="BookingS1Form"]/div[3]/div[1]/div/div[1]/div/select/option[{start_station}]')
     print("已輸入起站")
+    time.sleep(random.uniform(1, 3))
     driver_click_xpath(f'//*[@id="BookingS1Form"]/div[3]/div[1]/div/div[2]/div/select/option[{end_station}]')
     print("已輸入迄站")
+    time.sleep(random.uniform(1, 3))
     driver_click_xpath(f'//*[@id="BookingS1Form"]/div[3]/div[2]/div/div[2]/div[1]/select/option[{start_time}]')
     print("已輸入出發時間")
+    time.sleep(random.uniform(1, 3))
     driver_click_xpath("//*[@id='BookingS1Form']/div[3]/div[2]/div/div[1]/div[1]/input[2]")
     driver_click_xpath("//*[@id='mainBody']/div[9]/div[2]/div/div[2]/div[2]/span[21]")
     print("已輸入日期")
+    time.sleep(random.uniform(1, 3))
     driver_click_xpath(f'//*[@id="BookingS1Form"]/div[4]/div[1]/div[1]/div/select/option[{regular_ticket + 1}]')
     print("已輸入全票")
     driver_click_xpath(f'//*[@id="BookingS1Form"]/div[4]/div[1]/div[2]/div/select/option[{children_ticket + 1}]')
@@ -85,10 +99,11 @@ def enter():
     print("已輸入敬老票")
     driver_screenshot((By.XPATH, "//*[@id='BookingS1Form_homeCaptcha_passCode']"), "captcha.png")
     driver_send_keys_xpath("//*[@id='securityCode']", utils.get_ocr_password("captcha.png"))
+    time.sleep(random.uniform(1, 3))
     if early_ticket == 1:
         driver_click_xpath('//*[@id="onlyQueryOffPeakCheckBox"]')
-    time.sleep(3)
     driver_click_xpath('//*[@id="SubmitButton"]')
+    time.sleep(10000)
 
 
 if __name__ == '__main__':
