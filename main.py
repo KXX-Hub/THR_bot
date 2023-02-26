@@ -1,6 +1,5 @@
 import time
 import random
-
 import requests
 from selenium import webdriver
 from selenium.common import TimeoutException

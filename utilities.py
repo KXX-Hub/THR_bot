@@ -33,6 +33,9 @@ children_ticket : '0' #孩童票
 disabled_ticket : '0' #愛心票
 student_ticket : '0' #大學生票
 senior_persons_ticket : '0' #敬老票
+# -------------------------------------------
+# 僅顯示尚有早鳥優惠之車次 '是'or'否'
+early_ticket : '否'
 """
                 )
     sys.exit()
